@@ -10,8 +10,17 @@ const TimerSchema = new Schema({
     viewLink: String,
     adminLink: String,
     workTime: Number, // as minute type
+    breakTime: Number, // if isPomodoro true
+    longBreakTime: Number, // if isPomodoro true
     isPomodoro: Boolean,
-    repeatFOrever: Boolean,
+    repeatForever: {
+        type: Boolean,
+        default: false
+    },
+    bellSound: {
+        type: String,
+        default: "Ding"
+    },
     logs: [LogSchema],
 });
 

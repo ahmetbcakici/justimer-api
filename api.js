@@ -2,27 +2,47 @@ import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import randomstring from 'randomstring';
+import dotenv from 'dotenv';
 
 import Timer from './models/Timer';
 
-mongoose.connect(
-    'mongodb://localhost:27017/justimer', { useNewUrlParser: true },
-    (err) => {
-        if (err) throw err;
-        console.log('Mongoose connected!');
-    }
-);
-
 const router = express.Router();
 router.use(bodyParser.json());
+dotenv.config();
+
+mongoose.connect(process.env.DB_URI, { useNewUrlParser: true }, (err) => {
+    if (err) throw err;
+    console.log('Mongoose connected!');
+});
 
 router.get('/', (req, res) => {
     console.log(randomstring.generate(6));
     res.send('test');
 });
 
-router.post('generatetimer', (req, res) => {
-    console.log(req.body);
+router.post('/generatetimer', (req, res) => {
+    const { isPomodoro } = req.body;
+    const randomViewLink = randomstring.generate(6);
+    const randomAdminLink = randomstring.generate(6);
+
+    if (isPomodoro) {
+        Timer.create({
+            viewLink: randomViewLink,
+            adminLink: randomAdminLink,
+            workTime: 25,
+            breakTime: 5,
+            longBreakTime: 15,
+        });
+
+        return res.send(randomAdminLink);
+    }
+
+    Timer.create({
+        viewLink: randomViewLink,
+        adminLink: randomAdminLink,
+    });
+
+    return res.send(randomAdminLink);
 });
 
 export default router;
