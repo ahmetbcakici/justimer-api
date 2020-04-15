@@ -20,6 +20,13 @@ router.get('/', (req, res) => {
     res.send('test');
 });
 
+router.get('/timers/:id', async(req, res) => {
+    const { id } = req.params;
+    const doc = await Timer.findOne({ $or: [{ viewLink: id }, { adminLink: id }] });
+    console.log(doc);
+    res.send(doc);
+});
+
 router.post('/generatetimer', (req, res) => {
     const { isPomodoro } = req.body;
     const randomViewLink = randomstring.generate(6);
@@ -29,6 +36,7 @@ router.post('/generatetimer', (req, res) => {
         Timer.create({
             viewLink: randomViewLink,
             adminLink: randomAdminLink,
+            isPomodoro: true,
             workTime: 25,
             breakTime: 5,
             longBreakTime: 15,
