@@ -15,15 +15,9 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser: true }, (err) => {
     console.log('Mongoose connected!');
 });
 
-router.get('/', (req, res) => {
-    console.log(randomstring.generate(6));
-    res.send('test');
-});
-
 router.get('/timers/:id', async(req, res) => {
     const { id } = req.params;
     const doc = await Timer.findOne({ $or: [{ viewLink: id }, { adminLink: id }] });
-    console.log(doc);
     res.send(doc);
 });
 
@@ -31,6 +25,7 @@ router.post('/generatetimer', (req, res) => {
     const { isPomodoro } = req.body;
     const randomViewLink = randomstring.generate(6);
     const randomAdminLink = randomstring.generate(6);
+    // you have to generate unique links !!! solve the problem
 
     if (isPomodoro) {
         Timer.create({
@@ -51,6 +46,14 @@ router.post('/generatetimer', (req, res) => {
     });
 
     return res.send(randomAdminLink);
+});
+
+router.put('/setruntime', async(req, res) => {
+    const { adminLink } = req.body;
+    const doc = await Timer.findOne({ adminLink });
+    doc.runTimerTime = new Date();
+    doc.save();
+    res.send();
 });
 
 export default router;
