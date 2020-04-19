@@ -13,7 +13,10 @@ const TimerSchema = new Schema({
     workTime: Number, // as minute type
     breakTime: Number, // if isPomodoro true
     longBreakTime: Number, // if isPomodoro true
-    isPomodoro: Boolean,
+    isPomodoro: {
+        type: Boolean,
+        default: false,
+    },
     repeatForever: {
         type: Boolean,
         default: false

@@ -22,12 +22,12 @@ router.get('/timers/:id', async(req, res) => {
 });
 
 router.post('/generatetimer', (req, res) => {
-    const { isPomodoro } = req.body;
+    const { manualWorkTime, manualBreakTime } = req.body;
     const randomViewLink = randomstring.generate(6);
     const randomAdminLink = randomstring.generate(6);
     // you have to generate unique links !!! solve the problem
 
-    if (isPomodoro) {
+    if (!manualWorkTime) {
         Timer.create({
             viewLink: randomViewLink,
             adminLink: randomAdminLink,
@@ -41,6 +41,8 @@ router.post('/generatetimer', (req, res) => {
     }
 
     Timer.create({
+        workTime: manualWorkTime,
+        breakTime: manualBreakTime,
         viewLink: randomViewLink,
         adminLink: randomAdminLink,
     });
@@ -49,10 +51,11 @@ router.post('/generatetimer', (req, res) => {
 });
 
 router.put('/setruntime', async(req, res) => {
+    console.log("xx")
     const { adminLink } = req.body;
     const doc = await Timer.findOne({ adminLink });
     doc.runTimerTime = new Date();
-    doc.save();
+    await doc.save();
     res.send();
 });
 
