@@ -10,6 +10,12 @@ const router = express.Router();
 router.use(bodyParser.json());
 dotenv.config();
 
+// Run when client connects
+/* io.on('connection', socket => {
+    socket.on("test", () => console.log("bom"));
+
+}); */
+
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true }, (err) => {
     if (err) throw err;
     console.log('Mongoose connected!');
@@ -51,11 +57,21 @@ router.post('/generatetimer', (req, res) => {
 });
 
 router.put('/setruntime', async(req, res) => {
-    console.log("xx")
+    /* const { io } = req;
+    io.on('connection', (socket) => {
+        console.log("socket conneceeWed")
+        socket.emit(
+            "dbdinle",
+            () => {
+                console.log("dbdinle emit")
+            }
+        );
+    }); */
+
     const { adminLink } = req.body;
     const doc = await Timer.findOne({ adminLink });
-    doc.runTimerTime = new Date();
-    await doc.save();
+    doc.firstRunTimerTime = new Date();
+    doc.save();
     res.send();
 });
 

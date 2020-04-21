@@ -9,11 +9,15 @@ const LogSchema = new Schema({
 const TimerSchema = new Schema({
     viewLink: String,
     adminLink: String,
-    runTimerTime: Date,
+    firstRunTimerTime: Date,
     workTime: Number, // as minute type
     breakTime: Number, // if isPomodoro true
     longBreakTime: Number, // if isPomodoro true
     isPomodoro: {
+        type: Boolean,
+        default: false,
+    },
+    isWorkSession: {
         type: Boolean,
         default: false,
     },
