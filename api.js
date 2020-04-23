@@ -10,12 +10,6 @@ const router = express.Router();
 router.use(bodyParser.json());
 dotenv.config();
 
-// Run when client connects
-/* io.on('connection', socket => {
-    socket.on("test", () => console.log("bom"));
-
-}); */
-
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true }, (err) => {
     if (err) throw err;
     console.log('Mongoose connected!');
@@ -27,11 +21,11 @@ router.get('/timers/:id', async(req, res) => {
     res.send(doc);
 });
 
-router.post('/generatetimer', (req, res) => {
+router.post('/generatetimer', async(req, res) => {
     const { manualWorkTime, manualBreakTime } = req.body;
-    const randomViewLink = randomstring.generate(6);
-    const randomAdminLink = randomstring.generate(6);
-    // you have to generate unique links !!! solve the problem
+
+    const { randomViewLink } = await isUnique();
+    const { randomAdminLink } = await isUnique();
 
     if (!manualWorkTime) {
         Timer.create({
@@ -57,22 +51,24 @@ router.post('/generatetimer', (req, res) => {
 });
 
 router.put('/setruntime', async(req, res) => {
-    /* const { io } = req;
-    io.on('connection', (socket) => {
-        console.log("socket conneceeWed")
-        socket.emit(
-            "dbdinle",
-            () => {
-                console.log("dbdinle emit")
-            }
-        );
-    }); */
-
     const { adminLink } = req.body;
     const doc = await Timer.findOne({ adminLink });
     doc.firstRunTimerTime = new Date();
     doc.save();
     res.send();
 });
+
+
+const isUnique = async() => {
+    const randomViewLink = randomstring.generate(6);
+    const randomAdminLink = randomstring.generate(6);
+
+    const doc = await Timer.findOne({
+        $or: [{ viewLink: randomViewLink }, { adminLink: randomAdminLink }],
+    });
+
+    if (doc) return isUnique();
+    else return { randomViewLink, randomAdminLink };
+}
 
 export default router;

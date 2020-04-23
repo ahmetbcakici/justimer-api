@@ -12,16 +12,18 @@ const io = socketio(server);
 const PORT = process.env.PORT || 9995;
 
 io.on('connection', (socket) => {
-    console.log("socket connected")
+    //let x = Math.floor(Math.random() * 1);
+    //socket.join(1)
     socket.on('starttimer', (data) => {
-        io.sockets.emit('starttimer', data);
-    })
+        io.sockets.emit('starttimerr', data);
+        //io.to(1).emit('starttimer', data);
+    });
 });
 
-app.use((req, res, next) => {
+/* app.use((req, res, next) => {
     req.io = io;
     next();
-})
+}) */
 app.use(cors());
 app.use('/api', api);
 
