@@ -13,22 +13,6 @@ const TimerSchema = new Schema({
     workTime: Number, // as minute type
     breakTime: Number, // if isPomodoro true
     longBreakTime: Number, // if isPomodoro true
-    isPomodoro: {
-        type: Boolean,
-        default: false,
-    },
-    isWorkSession: {
-        type: Boolean,
-        default: false,
-    },
-    repeatForever: {
-        type: Boolean,
-        default: false
-    },
-    bellSound: {
-        type: String,
-        default: "Ding"
-    },
     logs: [LogSchema],
 });
 

@@ -31,7 +31,6 @@ router.post('/generatetimer', async(req, res) => {
         Timer.create({
             viewLink: randomViewLink,
             adminLink: randomAdminLink,
-            isPomodoro: true,
             workTime: 25,
             breakTime: 5,
             longBreakTime: 15,
